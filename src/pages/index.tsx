@@ -1,10 +1,11 @@
 import React from 'react';
 
+import Sidebar from '../components/Sidebar';
+
 const Home: React.FC = () => (
   <div className="">
-    <h1>code</h1>
-
-    <main>
+    <main className="h-screen overflow-hidden bg-black">
+      <Sidebar />
       {/* Sidebar */}
       {/* center */}
     </main>
