@@ -21,7 +21,7 @@ async function refreshAccessToken(token){
 
 
   } catch(error){
-    console.error(error);
+    console.error('Error in if of refresh token',error);
 
     return {
       ...token,
@@ -41,12 +41,14 @@ export default NextAuth({
   ],
   secret: process.env.JWT_SECRET,
   pages: {
-    signIn: '/login ',
+    signIn: '/login',
   },
   callbacks: {
     async jwt({ token, account, user }) {
+      console.log('@NEXTAUTH  INITIAL SIGN IN')
       // initial sign in
       if (account && user) {
+        console.log('@NEXTAUTH  INITIAL SIGN IN')
         return {
           ...token,
           accessToken: account.access_token,
