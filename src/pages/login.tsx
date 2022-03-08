@@ -32,8 +32,9 @@ export default Login;
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext,
 ) => {
+  console.log('Teste');
   const providers = await getProviders();
-  console.log('Providers', providers);
+  // console.log('Providers', providers);
 
   return {
     props: {
