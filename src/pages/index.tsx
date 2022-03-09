@@ -1,13 +1,13 @@
 import React from 'react';
 
 import Sidebar from '../components/Sidebar';
+import Center from '../components/Center';
 
 const Home: React.FC = () => (
-  <div className="">
-    <main className="h-screen overflow-hidden bg-black">
+  <div className=" h-screen overflow-hidden bg-black">
+    <main className="flex">
       <Sidebar />
-      {/* Sidebar */}
-      {/* center */}
+      <Center />
     </main>
 
     <div> {/* player */} </div>
