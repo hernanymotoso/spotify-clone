@@ -24,6 +24,7 @@ async function refreshAccessToken(token: JWT) {
 
     return {
       ...token,
+
       error: 'RefreshAccessTokenError',
     };
   }
@@ -74,6 +75,7 @@ export default NextAuth({
       session.user.accessToken = token.accessToken;
       session.user.refreshToken = token.refreshToken;
       session.user.username = token.username;
+      session.refreshTokenError = token.error;
 
       return session;
     },

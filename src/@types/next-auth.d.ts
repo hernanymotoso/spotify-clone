@@ -7,11 +7,13 @@ declare module 'next-auth/jwt' {
     refreshToken?: string | undefined;
     username?: string;
     accessTokenExpires?: number | undefined;
+    error?: string;
   }
 }
 
 declare module 'next-auth' {
   interface Session {
+    refreshTokenError?: string;
     user: {
       accessToken?: string | undefined;
       refreshToken?: string | undefined;
