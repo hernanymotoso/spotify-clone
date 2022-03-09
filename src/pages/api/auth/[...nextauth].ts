@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import SpotifyProvider from 'next-auth/providers/spotify';
 import { JWT } from 'next-auth/jwt';
-import spotifyApi, { LOGIN_URL } from '../../lib/spotify';
+import spotifyApi, { LOGIN_URL } from '../../../lib/spotify';
 
 async function refreshAccessToken(token: JWT) {
   try {
@@ -11,6 +11,7 @@ async function refreshAccessToken(token: JWT) {
     const { body: refreshedToken } = await spotifyApi.refreshAccessToken();
 
     console.log('@NEXTAUTH REFRESHED TOKEN IS', refreshedToken);
+    console.log(Date.now);
 
     return {
       ...token,
@@ -34,7 +35,7 @@ export default NextAuth({
     SpotifyProvider({
       clientId: process.env.NEXT_PUBLIC_CLIENT_ID as string,
       clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET as string,
-      // authorization: LOGIN_URL,
+      authorization: LOGIN_URL,
     }),
   ],
   secret: process.env.JWT_SECRET,
@@ -54,12 +55,13 @@ export default NextAuth({
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           username: account.providerAccountId,
-          accessTokenExpires: account.expires_at, // we are handling expiry times in Milliseconds hence * 1000
+          accessTokenExpires: (account.expires_at as number) * 1000, // we are handling expiry times in Milliseconds hence * 1000
         };
       }
 
       // Return previus token if the access token has not expired yet
-      if (Date.now() < token.accessTokenExpires * 1000) {
+
+      if (Date.now() < (token.accessTokenExpires as number) * 1000) {
         console.log('@NEXTAUTH EXISTING ACCESS TOKEN IS VALID');
         return token;
       }
@@ -69,7 +71,6 @@ export default NextAuth({
 
       return await refreshAccessToken(token);
     },
-
     async session({ session, token }) {
       session.user.accessToken = token.accessToken;
       session.user.refreshToken = token.refreshToken;

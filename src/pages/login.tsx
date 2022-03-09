@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   console.log('Teste');
   const providers = await getProviders();
-  // console.log('Providers', providers);
+  console.log('Providers', providers);
 
   return {
     props: {

@@ -6,7 +6,7 @@ declare module 'next-auth/jwt' {
     accessToken?: string | undefined;
     refreshToken?: string | undefined;
     username?: string;
-    accessTokenExpires: number;
+    accessTokenExpires?: number | undefined;
   }
 }
 
