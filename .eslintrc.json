@@ -43,6 +43,7 @@
     "react/require-default-props": "off",
     "no-param-reassign":"off",
     "no-return-await":  "off",
+    "consistent-return":"off",
     "import/extensions": [
       "error",
       "ignorePackages",

@@ -45,8 +45,8 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, account, user }) {
       console.log('@NEXTAUTH  INITIAL SIGN IN');
-      // initial sign in
 
+      // initial sign in
       if (account && user) {
         console.log('@NEXTAUTH  INITIAL SIGN IN');
 
@@ -60,8 +60,7 @@ export default NextAuth({
       }
 
       // Return previus token if the access token has not expired yet
-
-      if (Date.now() < (token.accessTokenExpires as number) * 1000) {
+      if (Date.now() < (token.accessTokenExpires as number)) {
         console.log('@NEXTAUTH EXISTING ACCESS TOKEN IS VALID');
         return token;
       }

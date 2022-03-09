@@ -11,7 +11,7 @@ const Login: React.FC<ILoginProps> = ({ providers }) => {
   console.log('Login');
 
   return (
-    <div>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center bg-black ">
       <img
         className="mb-5 w-52"
         src="https://links.papareact.com/9xl"
@@ -19,8 +19,14 @@ const Login: React.FC<ILoginProps> = ({ providers }) => {
       />
       {providers &&
         Object.values(providers).map(provider => (
-          <div>
-            <button type="button">Login with {provider.name}</button>
+          <div key={provider.name}>
+            <button
+              className="rounded-full bg-[#18D860] p-5 text-white"
+              type="button"
+              onClick={() => signIn(provider.id, { callbackUrl: '/' })}
+            >
+              Login with {provider.name}
+            </button>
           </div>
         ))}
     </div>

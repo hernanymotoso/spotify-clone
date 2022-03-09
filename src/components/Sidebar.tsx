@@ -1,4 +1,5 @@
 import React from 'react';
+import { signOut, useSession } from 'next-auth/react';
 
 import {
   HomeIcon,
@@ -10,11 +11,19 @@ import {
 } from '@heroicons/react/outline';
 
 const Sidebar: React.FC = () => {
-  console.log('Sidebar');
+  const { data: session, status } = useSession();
+  console.log('Session is', session);
 
   return (
     <div className="border-r border-gray-900 p-5 text-sm text-gray-500">
       <div className="space-y-4">
+        <button
+          className="flex items-center space-x-2 hover:text-white"
+          type="button"
+          onClick={() => signOut()}
+        >
+          <p>Log out</p>
+        </button>
         <button
           className="flex items-center space-x-2 hover:text-white"
           type="button"
