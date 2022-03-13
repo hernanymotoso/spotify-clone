@@ -5,6 +5,7 @@ import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import Sidebar from '../components/Sidebar';
 import Center from '../components/Center';
+import Player from '../components/Player';
 
 interface IHomeProps {
   session: Session;
@@ -17,7 +18,9 @@ const Home: React.FC<IHomeProps> = () => (
       <Center />
     </main>
 
-    <div> {/* player */} </div>
+    <div className="sticky bottom-0">
+      <Player />
+    </div>
   </div>
 );
 
