@@ -10,6 +10,7 @@ export interface IPlaylistTracksItem {
     album: { images: { url: string }[]; name: string };
     artists: { id: string; name: string }[];
     duration_ms: number;
+    uri: string;
   };
 }
 
