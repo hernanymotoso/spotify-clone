@@ -11,6 +11,7 @@ import {
   VolumeUpIcon,
   SwitchHorizontalIcon,
 } from '@heroicons/react/solid';
+import { debounce } from 'lodash';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -44,14 +45,6 @@ const Player: React.FC = () => {
     }
   }, [setCurrentTrackId, songInfo, spotifyApi, setIsPlaying]);
 
-  useEffect(() => {
-    if (spotifyApi.getAccessToken() && !currentTrackId) {
-      fetchCurrentSong();
-
-      setVolume(50);
-    }
-  }, [spotifyApi, currentTrackId, session, fetchCurrentSong]);
-
   const handlePlayPause = useCallback(() => {
     spotifyApi.getMyCurrentPlaybackState().then(response => {
       if (response.body.is_playing) {
@@ -71,6 +64,30 @@ const Player: React.FC = () => {
       }
     });
   }, [spotifyApi, setIsPlaying]);
+
+  const debouncedAdjustVolume = useCallback(
+    debounce(vol => {
+      spotifyApi.setVolume(vol).catch(err => {
+        // eslint-disable-next-line no-alert
+        alert('Only premium assinants can adjusts the volume');
+        console.log('Play song error', err);
+      });
+    }, 500),
+    [],
+  );
+  useEffect(() => {
+    if (spotifyApi.getAccessToken() && !currentTrackId) {
+      fetchCurrentSong();
+
+      setVolume(50);
+    }
+  }, [spotifyApi, currentTrackId, session, fetchCurrentSong]);
+
+  useEffect(() => {
+    if (volume > 0 && volume < 100) {
+      debouncedAdjustVolume(volume);
+    }
+  }, [volume, debouncedAdjustVolume]);
 
   return (
     <div className="grid h-24 grid-cols-3 bg-gradient-to-b from-black to-gray-900 px-2 text-xs text-white md:px-8 md:text-base">
@@ -102,16 +119,22 @@ const Player: React.FC = () => {
 
       {/* Right */}
       <div className="flex items-center justify-end space-x-3 pr-5 md:space-x-4">
-        <VolumeDownIcon className="button" />
+        <VolumeDownIcon
+          onClick={() => volume > 0 && setVolume(volume - 10)}
+          className="button"
+        />
         <input
           className="w-14 md:w-28 "
           type="range"
-          value=""
+          value={volume}
           min={0}
           max={100}
           onChange={e => setVolume(Number(e.target.value))}
         />
-        <VolumeUpIcon className="button" />
+        <VolumeUpIcon
+          onClick={() => volume < 100 && setVolume(volume + 10)}
+          className="button"
+        />
       </div>
     </div>
   );
