@@ -1,3 +1,16 @@
+import {
+  HeartIcon,
+  VolumeUpIcon as VolumeDownIcon,
+} from '@heroicons/react/outline';
+import {
+  RewindIcon,
+  FastForwardIcon,
+  PauseIcon,
+  PlayIcon,
+  ReplyIcon,
+  VolumeUpIcon,
+  SwitchHorizontalIcon,
+} from '@heroicons/react/solid';
 import { useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
@@ -39,6 +52,26 @@ const Player: React.FC = () => {
     }
   }, [spotifyApi, currentTrackId, session, fetchCurrentSong]);
 
+  const handlePlayPause = useCallback(() => {
+    spotifyApi.getMyCurrentPlaybackState().then(response => {
+      if (response.body.is_playing) {
+        spotifyApi.pause().catch(err => {
+          // eslint-disable-next-line no-alert
+          alert('Only premium assinants can play and stop track');
+          console.log('Play song error', err);
+        });
+        setIsPlaying(false);
+      } else {
+        spotifyApi.play().catch(err => {
+          // eslint-disable-next-line no-alert
+          alert('Only premium assinants can play and stop track');
+          console.log('Play song error', err);
+        });
+        setIsPlaying(true);
+      }
+    });
+  }, [spotifyApi, setIsPlaying]);
+
   return (
     <div className="grid h-24 grid-cols-3 bg-gradient-to-b from-black to-gray-900 px-2 text-xs text-white md:px-8 md:text-base">
       {/* left */}
@@ -52,6 +85,33 @@ const Player: React.FC = () => {
           <h3>{songInfo?.name}</h3>
           <p>{songInfo?.artists?.[0]?.name}</p>
         </div>
+      </div>
+      {/* Center */}
+      <div className="flex items-center justify-evenly">
+        <SwitchHorizontalIcon className="button" />
+        <RewindIcon className="button" />
+
+        {isPlaying ? (
+          <PauseIcon onClick={handlePlayPause} className="button h-10 w-10" />
+        ) : (
+          <PlayIcon onClick={handlePlayPause} className="button h-10 w-10" />
+        )}
+        <FastForwardIcon className="button" />
+        <ReplyIcon className="button" />
+      </div>
+
+      {/* Right */}
+      <div className="flex items-center justify-end space-x-3 pr-5 md:space-x-4">
+        <VolumeDownIcon className="button" />
+        <input
+          className="w-14 md:w-28 "
+          type="range"
+          value=""
+          min={0}
+          max={100}
+          onChange={e => setVolume(Number(e.target.value))}
+        />
+        <VolumeUpIcon className="button" />
       </div>
     </div>
   );
