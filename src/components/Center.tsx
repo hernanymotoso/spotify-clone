@@ -1,7 +1,13 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { ChevronDownIcon } from '@heroicons/react/outline';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { shuffle } from 'lodash';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { playlistState, playlistIdState } from '../atoms/playlistAtom';
+import useSpotify from '../hooks/useSpotify';
+import Songs from './Songs';
 
 const colors = [
   'from-indigo-500',
@@ -15,16 +21,39 @@ const colors = [
 
 const Center: React.FC = () => {
   console.log('Center');
+  const spotifyApi = useSpotify();
   const { data: session } = useSession();
   const [color, setColor] = useState<string>();
+
+  const playlistId = useRecoilValue(playlistIdState);
+  const [playlist, setPlaylist] = useRecoilState(playlistState);
+
   useEffect(() => {
     setColor(shuffle(colors).pop());
-  }, []);
+  }, [playlistId]);
+
+  useEffect(() => {
+    spotifyApi
+      .getPlaylist(playlistId)
+      .then(response => {
+        console.log('The playlist data is', response);
+        setPlaylist(response.body);
+      })
+      .catch(err =>
+        console.log(
+          'Something wrong when we getting playlist in Center component',
+          err,
+        ),
+      );
+  }, [spotifyApi, playlistId, setPlaylist]);
 
   return (
-    <div className="flex-grow">
+    <div className="h-screen flex-grow overflow-y-scroll scrollbar-hide ">
       <header className="absolute top-5 right-8">
-        <div className="flex cursor-pointer items-center space-x-3 rounded-full bg-red-300 p-1 pr-2 opacity-90 hover:opacity-80">
+        <div
+          onClick={() => signOut()}
+          className="flex cursor-pointer items-center space-x-3 rounded-full bg-black p-1 pr-2 opacity-90 hover:opacity-80"
+        >
           <img
             className="h-10 w-10 rounded-full"
             src={session?.user.image as string}
@@ -35,11 +64,19 @@ const Center: React.FC = () => {
         </div>
       </header>
       <section
-        className={`padding-8 flex h-80 items-end space-x-7 bg-gradient-to-b ${color} to-black text-white`}
+        className={`flex h-80 items-end space-x-7 bg-gradient-to-b p-8 ${color} to-black text-white`}
       >
-        {/* <img src="" alt="" /> */}
-        <h1>Hello</h1>
+        <img className="h-44 w-44" src={playlist?.images?.[0].url} alt="" />
+        <div>
+          <p>PLAYLIST</p>
+          <h1 className="text-2xl font-bold md:text-3xl xl:text-5xl">
+            {playlist?.name}
+          </h1>
+        </div>
       </section>
+      <div>
+        <Songs />
+      </div>
     </div>
   );
 };
