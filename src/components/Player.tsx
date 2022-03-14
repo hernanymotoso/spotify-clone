@@ -47,7 +47,7 @@ const Player: React.FC = () => {
 
   const handlePlayPause = useCallback(() => {
     spotifyApi.getMyCurrentPlaybackState().then(response => {
-      if (response.body.is_playing) {
+      if (response.body?.is_playing) {
         spotifyApi.pause().catch(err => {
           // eslint-disable-next-line no-alert
           alert('Only premium assinants can play and stop track');
